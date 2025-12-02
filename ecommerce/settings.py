@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from django.contrib import messages
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     "category",
     "accounts",
     "store",
+    "carts",
 ]
 
 MIDDLEWARE = [
@@ -66,6 +68,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "category.context_processors.menu_links",
+                "carts.context_processors.counter",
             ],
         },
     },
@@ -129,11 +132,15 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',
+}
 
-
-
-
-
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'marlonsantiagoleonbeltran@gmail.com'
+EMAIL_HOST_PASSWORD = 'SaNtIaGo@159753'
+EMAIL_USE_TLS = True
 
 
 # Solo necesario para producción (collectstatic)
