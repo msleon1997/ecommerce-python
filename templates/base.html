@@ -25,8 +25,14 @@
 <link href="{% static 'css/ui.css' %} " rel="stylesheet" type="text/css"/>
 <link href=" {% static 'css/responsive.css' %} " rel="stylesheet" media="only screen and (max-width: 1200px)" />
 
+<link rel="stylesheet" href="{% static 'css/coments_review.css' %}" />
 <!-- custom javascript -->
 <script src=" {% static 'js/script.js' %} " type="text/javascript"></script>
+
+
+<script src="https://www.paypal.com/sdk/js?client-id=AQQcYJd2cQ9iw6gLWELOByR5t8Ny4FpwRV8TppRGE1CtYCZV-U2lDn1bklizDj7FQiA5TMZhodCJZxym&buyer-country=US&currency=USD&components=buttons&enable-funding=venmo,paylater,card"
+            data-sdk-integration-source="developer-studio"
+        ></script>
 
 <script type=" {% static 'text/javascript' %} ">
 /// some script
@@ -52,3 +58,13 @@ $(document).ready(function() {
     {% endblock content %}
 
 {% include "includes/footer.html" %}
+
+
+<script>
+    // tiempo en milisegundos (30 segundos)
+    const sessionTimeout = 1800000;
+
+    setTimeout(function() {
+        window.location.href = "/accounts/login/";
+    }, sessionTimeout);
+</script>

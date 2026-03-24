@@ -1,8 +1,8 @@
 from django.contrib import messages
-from django.shortcuts import redirect, render
-
-from .forms import RegistrationForm
-from .models import Account
+from django.shortcuts import get_object_or_404, redirect, render
+from orders.models import Order
+from .forms import RegistrationForm, User_form, UserProfileForm
+from .models import Account, userProfile
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
@@ -42,25 +42,27 @@ def register(request):
             )
             user.phone = phone
             user.save()
+            
+            
+            profile = userProfile()
+            profile.user_id = user.id
+            profile.profile_picture = 'default/default-user.webp'
+            profile.save()
+            
+            
            
-            current_site = get_current_site(request)
-            mail_subject = 'Por favor activa tu cuenta'
-            body =  render_to_string('accounts/account_verification_email.html', {
-               'user': user,
-               'domain': current_site,
-               'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-               'token': default_token_generator.make_token(user),
-            })
+            # current_site = get_current_site(request)
+            # mail_subject = 'Por favor activa tu cuenta'
+            # body =  render_to_string('accounts/account_verification_email.html', {
+            #    'user': user,
+            #    'domain': current_site,
+            #    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+            #    'token': default_token_generator.make_token(user),
+            # })
            
-            to_mail = mail
-            send_email = EmailMessage(mail_subject, body, to=[to_mail])
-            send_email.send()
-           
-           
-           
-           
-           
-           
+            # to_mail = mail
+            # send_email = EmailMessage(mail_subject, body, to=[to_mail])
+            # send_email.send()
            
            
            
@@ -173,8 +175,15 @@ def activate(request, uidb64, token):
     
 @login_required(login_url='login')
 def dashboard(request):
+    orders = Order.objects.order_by('-created_at').filter(user_id=request.user.id, is_ordered=True)
+    orders_count = orders.count()
+    userprofile = userProfile.objects.get(user_id=request.user.id)
     
-    return render(request, 'accounts/dashboard.html')
+    context = {
+        'orders_count': orders_count,
+        'userprofile': userprofile,
+    }
+    return render(request, 'accounts/dashboard.html', context)
 
 def forgotpassword(request):
     if request.method == 'POST':
@@ -235,3 +244,60 @@ def resetpassword(request):
             return redirect('resetpassword')
     return render(request, 'accounts/resetpassword.html')
 
+def my_orders(request):
+    orders = Order.objects.filter(user=request.user, is_ordered=True).order_by('-created_at')
+    context = {
+        'orders': orders,
+    }
+    return render(request, 'accounts/my_orders.html', context)
+
+
+@login_required(login_url='login')
+def edit_profile(request):
+    userprofile =  get_object_or_404(userProfile, user=request.user)
+    if request.method == 'POST':
+        user_form = User_form(request.POST, instance=request.user)
+        profile_form = UserProfileForm(request.POST, request.FILES, instance=userprofile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, '¡Tu perfil ha sido actualizado!')
+            return redirect('edit_profile')
+        
+    else:
+        user_form = User_form(instance=request.user)
+        profile_form = UserProfileForm(instance=userprofile)
+        
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form,
+        'userprofile': userprofile,
+        
+    }
+    return render(request, 'accounts/edit_profile.html', context)
+
+
+
+@login_required(login_url='login')
+def change_password(request):
+    if request.method == 'POST':
+        current_password = request.POST['current_password']
+        new_password = request.POST['new_password']
+        confirm_password = request.POST['confirm_password']
+        user = Account.objects.get(username__exact=request.user.username)
+        
+        if new_password == confirm_password:
+            success = user.check_password(current_password)
+            if success:
+                user.set_password(new_password)
+                user.save()
+                messages.success(request, '¡Tu contraseña ha sido actualizada!')
+                return redirect('change_password')
+            else:
+                messages.error(request, 'Por favor ingresa tu contraseña actual correctamente.')
+                return redirect('change_password')
+            
+        else: 
+            messages.error(request, 'Las contraseñas no coinciden.')
+            return redirect('change_password')
+    return render(request, 'accounts/change_password.html')

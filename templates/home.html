@@ -35,6 +35,15 @@
 			<figcaption class="info-wrap">
 				<a href="{{product.get_url}}" class="title">{{product.product_name}}</a>
 				<div class="price mt-1">{{product.price}}</div> <!-- price-wrap.// -->
+				<div class="rating-stars-commented me-2">
+                  {% for i in "12345" %}
+                    {% if forloop.counter <= product.averageReview %}
+                      <span class="star filled">★</span>
+                    {% else %}
+                      <span class="star">☆</span>
+                    {% endif %}
+                  {% endfor %}
+                </div>
 			</figcaption>
 		</div>
 	</div> <!-- col.// -->

@@ -13,58 +13,58 @@
     <div class="card">
         <div class="card-body">
             <h4 class="card-title mb-5"> Direccion de facturacion </h4>
-            <form  action="" method="POST">
+            <form  action="{% url 'place_order'%}" method="POST">
                 {% csrf_token %}
                 <div class="form-row">
                     <div class="col form-group">
                         <label for="">Nombre</label>
-                        <input type="text" class="form-control" name="first_name">
+                        <input type="text" class="form-control" name="first_name" required>
                     </div>
 
                     <div class="col form-group">
                         <label for="">Apellido</label>
-                        <input type="text" class="form-control" name="last_name">
+                        <input type="text" class="form-control" name="last_name" required>
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="col form-group">
                         <label for="">Email</label>
-                        <input type="email" class="form-control" name="mail">
+                        <input type="email" class="form-control" name="email" required>
                     </div>
 
                     <div class="col form-group">
                         <label for="">Telefono/Celular</label>
-                        <input type="text" class="form-control" name="phone">
+                        <input type="text" class="form-control" name="phone" required>
                     </div>
                 </div>
                     
                 <div class="form-row">
                     <div class="col form-group">
-                        <label for="">Dirección</label>
-                        <input type="email" class="form-control" name="address_line_1">
+                        <label for="">Dirección Principal</label>
+                        <input type="text" class="form-control" name="address_line_1" required>
                     </div>
 
                     <div class="col form-group">
-                        <label for="">Detalles dirección</label>
-                        <input type="text" class="form-control" name="address_line_2">
+                        <label for="">Dirección Secundaria</label>
+                        <input type="text" class="form-control" name="address_line_2" required>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="col form-group">
                         <label for="">Ciudad</label>
-                        <input type="email" class="form-control" name="city">
+                        <input type="text" class="form-control" name="city" required>
                     </div>
 
                     <div class="col form-group">
                         <label for="">Provincia</label>
-                        <input type="text" class="form-control" name="state">
+                        <input type="text" class="form-control" name="state" required>
                     </div>
 
                     <div class="col form-group">
                         <label for="">Pais</label>
-                        <input type="text" class="form-control" name="country">
+                        <input type="text" class="form-control" name="country" required>
                     </div>
                 </div>
                     
@@ -131,8 +131,8 @@
                     </tbody>
                 </table>
 
-                <button type="submit" name= "submit" class="btn btn-primary btn-block"> Ordenar productos </button>
-                <a href="{% url 'store' %}" class="btn btn-light btn-block">Continua comprando</a>
+                <button type="submit" name= "submit" class="btn btn-primary btn-block"> Comprar productos </button>
+                <a href="{% url 'store' %}" class="btn btn-light btn-block">Volver a la tienda</a>
                </form>
             </div> <!-- card-body.// -->
         </div> <!-- card.// -->
